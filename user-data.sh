@@ -9,11 +9,11 @@ set -eu
 GIT_REPO="https://github.com/Neilson-Ch/credit_score_prediction_finpro.git"
 SUBFOLDER=""                  # path inside repo; leave empty if app at root
 APP_FILE="streamlit_app.py"
-ENDPOINT_NAME="wine-endpoint"
+ENDPOINT_NAME="credit-score-endpoint"
 # -------------------------------------------------------------------------
 
 REGION="us-east-1"
-APP_DIR="/opt/wine-app"
+APP_DIR="/opt/credit-score-app"
 VENV_DIR="/opt/streamlit-venv"
 
 if [ -z "$SUBFOLDER" ]; then
