@@ -1,3 +1,103 @@
+"""Streamlit client untuk Credit Score endpoint di Amazon SageMaker.
+
+Seluruh preprocessing dan loading artifact dilakukan oleh inference.py di endpoint.
+Aplikasi EC2 hanya membuat payload mentah, memanggil endpoint, dan menampilkan hasil.
+"""
+
+import json
+import os
+
+import boto3
+import pandas as pd
+import streamlit as st
+from botocore.exceptions import ClientError, NoCredentialsError
+
+
+st.set_page_config(
+    page_title="Credit Score Predictor",
+    page_icon="💳",
+    layout="centered",
+)
+
+st.title("💳 Credit Score Prediction")
+st.caption("Prediksi kategori credit score nasabah: Poor / Standard / Good")
+
+ENDPOINT_NAME = os.environ.get("ENDPOINT_NAME", "credit-score-endpoint")
+REGION = os.environ.get(
+    "AWS_REGION",
+    os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
+)
+
+LABEL_MAP = {0: "Poor", 1: "Standard", 2: "Good"}
+
+
+@st.cache_resource
+def get_runtime_client():
+    return boto3.client("sagemaker-runtime", region_name=REGION)
+
+
+def invoke_endpoint(raw_record: dict) -> dict:
+    response = get_runtime_client().invoke_endpoint(
+        EndpointName=ENDPOINT_NAME,
+        ContentType="application/json",
+        Accept="application/json",
+        Body=json.dumps({"instances": [raw_record]}),
+    )
+    return json.loads(response["Body"].read().decode("utf-8"))
+
+
+MONTHS = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+]
+
+LOAN_OPTIONS = [
+    "Auto Loan",
+    "Credit-Builder Loan",
+    "Personal Loan",
+    "Home Equity Loan",
+    "Mortgage Loan",
+    "Student Loan",
+    "Debt Consolidation Loan",
+    "Payday Loan",
+]
+
+OCCUPATION_OPTIONS = [
+    "Engineer",
+    "Lawyer",
+    "Architect",
+    "Media_Manager",
+    "Accountant",
+    "Entrepreneur",
+    "Developer",
+    "Scientist",
+    "Teacher",
+    "Mechanic",
+    "Journalist",
+    "Doctor",
+    "Manager",
+    "Musician",
+    "Writer",
+    "Unknown",
+]
+
+
+with st.form("credit_form"):
+    st.subheader("Data Nasabah")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        month = st.selectbox("Month", MONTHS)
+        age = st.number_input("Age", min_value=1, max_value=100, value=30)
+        occupation = st.selectbox("Occupation", OCCUPATION_OPTIONS)
+        annual_income = st.number_input(
             "Annual Income",
             min_value=0.0,
             value=50000.0,
