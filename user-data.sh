@@ -6,7 +6,7 @@
 set -eu
 
 # -------- EDIT THESE -----------------------------------------------------
-GIT_REPO="https://github.com/<your-handle>/<your-repo>.git"
+GIT_REPO="https://github.com/Neilson-Ch/credit_score_prediction_finpro.git"
 SUBFOLDER=""                  # path inside repo; leave empty if app at root
 APP_FILE="streamlit_app.py"
 ENDPOINT_NAME="wine-endpoint"
