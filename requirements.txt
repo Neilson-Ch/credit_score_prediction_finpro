@@ -12,3 +12,4 @@ protobuf<=3.20.0
 xgboost==3.0.2
 lightgbm==4.6.0
 catboost==1.2.8
+boto3>=1.34
