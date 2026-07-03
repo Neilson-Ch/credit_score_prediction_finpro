@@ -15,7 +15,7 @@ from botocore.exceptions import (
 
 ENDPOINT_NAME = os.environ.get(
     "ENDPOINT_NAME",
-    "credit-score-endpoint-v3",
+    "credit-score-endpoint",
 )
 AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
 
